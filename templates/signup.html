@@ -1,0 +1,48 @@
+{% extends "layout.html" %}
+
+{% block title %} Registro {% endblock %}
+
+{% block content %}
+
+
+
+
+<div class="card" style="width: 18rem;">
+  <div class="card-body">
+    <form action="{{ url_for('signup') }}" method="POST">
+      <div class="form-group">
+        <label for="inputUname">Nombre de Ususario:</label>
+        {{ form.username(type="text", class="form-control", placeholder="Nombre de suario") }}
+        {% for error in form.username.errors %}
+          <div class="alert alert-danger" role="alert">
+            {{ error }}
+          </div>
+        {% endfor %}
+
+      </div>
+      <div class="form-group">
+        <label for="InputPass">Contraseña</label>
+        {{ form.password(type="password", class="form-control") }}
+        {% for error in form.password.errors %}
+          <div class="alert alert-danger" role="alert">
+            {{ error }}
+          </div>
+        {% endfor %}
+
+      </div>
+      <div class="form-group">
+        <label for="InputConfirm">Confirmar contraseña</label>
+        {{ form.confirm_pass(type="password", class="form-control") }}
+        {% for error in form.confirm_pass.errors %}
+          <div class="alert alert-danger" role="alert">
+            {{ error }}
+          </div>
+        {% endfor %}
+      </div>
+      {{ form.submit(type="submit", class="btn btn-primary") }}
+      {{ form.csrf_token }}
+    </form>
+  </div>
+</div>
+
+{% endblock %}
