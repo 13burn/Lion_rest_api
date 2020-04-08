@@ -1,8 +1,12 @@
 from flask import Flask, render_template, request
 from everyform import *
+from datafetch import *
 
 app = Flask (__name__)
 app.secret_key = "nota"
+#only usable in my local machine
+app.config["SQLALCHEMY_DATABASE_URI"] = "mysql://root:balepo@localhost/nus"
+db = SQLAlchemy(app)
 
 
 @app.route("/")
@@ -17,9 +21,13 @@ def login():
 @app.route("/registro", methods=["GET", "POST"])
 def signup():
     forma = registerform()
-    print("bien 1")
+
     if forma.validate_on_submit():
-        print(request.environ['REMOTE_ADDR'])
+        username = forma.username.data
+        password = forma.password.data
+        user = users(username=username, password=password)
+        db.session.add(user)
+        db.session.commit()
         return "ok"
     else:
         for error in forma.errors:
