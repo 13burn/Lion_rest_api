@@ -1,9 +1,9 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, url_for, redirect
 from everyform import *
 from datafetch import *
 
 app = Flask (__name__)
-app.secret_key = "nota"
+app.secret_key = "temporal"
 #only usable in my local machine
 app.config["SQLALCHEMY_DATABASE_URI"] = "mysql://root:balepo@localhost/nus"
 db = SQLAlchemy(app)
@@ -14,9 +14,13 @@ db = SQLAlchemy(app)
 def index():
     return render_template("index.html")
 
-@app.route("/iniciar")
+@app.route("/iniciar", methods=["GET", "POST"])
 def login():
-    return render_template("login.html")
+    login_form = loginform()
+    if login_form.validate_on_submit():
+        print("meh")
+
+    return render_template("login.html", form = login_form)
 
 @app.route("/registro", methods=["GET", "POST"])
 def signup():
@@ -25,10 +29,11 @@ def signup():
     if forma.validate_on_submit():
         username = forma.username.data
         password = forma.password.data
-        user = users(username=username, password=password)
+        #pasa argumentos locales a la clase creada en datafetch
+        user = userName(name=username, password=password)
         db.session.add(user)
         db.session.commit()
-        return "ok"
+        return redirect(url_for("login"))
     else:
         for error in forma.errors:
             print(error)

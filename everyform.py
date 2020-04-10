@@ -1,6 +1,8 @@
 from flask_wtf import FlaskForm
 from wtforms import SubmitField, StringField, PasswordField
-from wtforms.validators import Length, InputRequired, EqualTo
+from wtforms.validators import Length, InputRequired, EqualTo, ValidationError
+
+from datafetch import userName
 
 class registerform(FlaskForm):
     username = StringField("Nombre se Ususario:",
@@ -12,4 +14,27 @@ class registerform(FlaskForm):
     confirm_pass = PasswordField("Confirmar",
         validators=[ EqualTo("password", message="las contraseñas deben coincidir"),
         InputRequired(message="campo necesario")])
-    submit = SubmitField("Crear")
+    submit = SubmitField("Crear Cuenta")
+
+    def validate_username(self, username):
+        user_object = userName.query.filter_by( name=username.data).first()
+        if user_object:
+            raise ValidationError("Nombre de usuario ya existe, use otro nombre.")
+
+class loginform(FlaskForm):
+    """ formulario login """
+    username = StringField("Username_lab", validators=[InputRequired(message="Nombre de usuario necesario.")])
+    password = PasswordField("password_lab", validators=[InputRequired(message="Contraseña necesaria.")])
+    submit = SubmitField("Iniciar Sesion")
+
+    def input_validation(self, username):
+        username_in = username.data
+        pass_in = loginform.password.data
+        print(3)
+        user_obj = username.query.filter_by( name=username_in.data).first()
+        if user_obj is None:
+            print(1)
+            raise ValidationError("Nombre de usuario o contraseña erroneos")
+        elif pass_in != user_obj.password:
+            print(2)
+            raise ValidationError("Nombre de usuario o contraseña erroneos")
