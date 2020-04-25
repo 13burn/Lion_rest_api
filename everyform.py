@@ -17,7 +17,7 @@ class registerform(FlaskForm):
     submit = SubmitField("Crear Cuenta")
 
     def validate_username(self, username):
-        user_object = userName.query.filter_by( name=username.data).first()
+        user_object = userName.query.filter_by( UID=username.data).first()#usando el nombre de usuario como se marca en la tabla
         if user_object:
             raise ValidationError("Nombre de usuario ya existe, use otro nombre.")
 
@@ -27,14 +27,19 @@ class loginform(FlaskForm):
     password = PasswordField("password_lab", validators=[InputRequired(message="Contraseña necesaria.")])
     submit = SubmitField("Iniciar Sesion")
 
+
+    """analizar la fincion para encontrar errores
+    >>>>
     def input_validation(self, username):
         username_in = username.data
         pass_in = loginform.password.data
         print(3)
-        user_obj = username.query.filter_by( name=username_in.data).first()
+        user_obj = username.query.filter_by( UID=username_in.data).first()
         if user_obj is None:
             print(1)
             raise ValidationError("Nombre de usuario o contraseña erroneos")
         elif pass_in != user_obj.password:
             print(2)
             raise ValidationError("Nombre de usuario o contraseña erroneos")
+    >>>>
+    """

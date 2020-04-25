@@ -5,7 +5,7 @@ from datafetch import *
 app = Flask (__name__)
 app.secret_key = "temporal"
 #only usable in my local machine
-app.config["SQLALCHEMY_DATABASE_URI"] = "mysql://root:balepo@localhost/nus"
+app.config["SQLALCHEMY_DATABASE_URI"] = "mysql://root:password@localhost/sys"
 db = SQLAlchemy(app)
 
 
@@ -15,7 +15,7 @@ def index():
     return render_template("index.html")
 
 @app.route("/iniciar", methods=["GET", "POST"])
-def login():
+def login():#fincion debe enviar una cookie y enviar a HOME
     login_form = loginform()
     if login_form.validate_on_submit():
         print("meh")
@@ -27,10 +27,11 @@ def signup():
     forma = registerform()
 
     if forma.validate_on_submit():
+        #crea variables locales
         username = forma.username.data
         password = forma.password.data
         #pasa argumentos locales a la clase creada en datafetch
-        user = userName(name=username, password=password)
+        user = userName(UID=username, Passkey=password)
         db.session.add(user)
         db.session.commit()
         return redirect(url_for("login"))
